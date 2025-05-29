@@ -249,33 +249,46 @@ void menu() {
 
             switch (opsi) {
                 case 1: {
-                    string kode, nama, kategori;
-                    int stok;
-                    double harga;
-                
-                    cout << "Masukkan Kode Produk: ";
-                    getline(cin, kode);
-                    cout << "Masukkan Nama Produk: ";
-                    getline(cin, nama);
-                    cout << "Masukkan Kategori Produk: ";
-                    getline(cin, kategori);
+                        int jumlah;
+                        cout << "Masukkan Jumlah Produk Yang Ingin ditambahkan:  ";
+                        while (!(cin >> jumlah) || jumlah <= 0) {
+                            cout << "Input tidak valid. Masukkan Jumlah Produk Kembali: ";
+                            cin.clear(); cin.ignore(1000, '\n');
+                        }
+                        cin.ignore();
 
-                    cout << "Masukkan Stok Produk: ";
-                    while (!(cin>>stok) || stok<0) {
-                        cout << "Input tidak valid. Masukkan stok dengan angka positif: ";
-                        cin.clear(); cin.ignore(1000, '\n');    
-                    }
-                   
-                    cout << "Masukkan Harga Produk: ";
-                    while (!(cin >> harga) || harga < 0) {
-                        cout << "Input tidak valid. Masukkan harga dengan angka positif: ";
-                        cin.clear(); cin.ignore(1000, '\n');
-                    }
+                        for (int i = 1; i <= jumlah; ++i) {
+                            string kode, nama, kategori;
+                            int stok;
+                            double harga;
 
-                    tambahproduk(kode, nama, kategori, stok, harga);
-                    cin.ignore();
+                            cout << "\n=== Input Produk ke-" << i << " ===\n";
+
+                            cout << "Masukkan Kode Produk: ";
+                            getline(cin, kode);
+                            cout << "Masukkan Nama Produk: ";
+                            getline(cin, nama);
+                            cout << "Masukkan Kategori Produk: ";
+                        getline(cin, kategori);
+
+                        cout << "Masukkan Stok Produk: ";
+                        while (!(cin >> stok) || stok < 0) {
+                            cout << "Input tidak valid. Masukkan stok dengan angka positif: ";
+                            cin.clear(); cin.ignore(1000, '\n');
+                        }
+
+                        cout << "Masukkan Harga Produk: ";
+                        while (!(cin >> harga) || harga < 0) {
+                            cout << "Input tidak valid. Masukkan harga dengan angka positif: ";
+                            cin.clear(); cin.ignore(1000, '\n');
+                        }
+
+                        cin.ignore();
+                        tambahproduk(kode, nama, kategori, stok, harga);
+                    }
                     break;
                 }
+
 
                 case 2:
                     tampilkanproduk();
