@@ -12,7 +12,7 @@ catatan: fitur menampilkan semua produk diurutkan berdasarkan (harga) dan (nama)
 catatan: fitur pencarian produk berdasarkan (kode) produk dan menggunakan metode linear search
 5. Simpan ke file dan baca dari file
 6. Pengurutan produk
-catatan: pengurutan berdasarkan harga terendah ke tertinggi dan nama produk
+catatan: pengguna bisa memilih mau mengurutkan berdasarkan nama atau harga, ascending//descending (a-z/z-a atau termurah-termahal/termahal-termurah
 8. Void menu
 9. Error handling di tiap fiturnya
 
