@@ -49,7 +49,7 @@ void tambahproduk(string kode, string nama, string kategori, int stok, double ha
         temp->next = baru;
     }
 
-    cout << "Data Produk Berhasil Ditambahkan" << endl;
+    cout << "\n~Data Produk Berhasil Ditambahkan~" << endl;
 }
 
 void editproduk(string kode) {
@@ -57,21 +57,25 @@ void editproduk(string kode) {
     while (temp) {
         if (temp->kode == kode) {
             cout << "Masukkan Nama Produk: ";
-            cin.ignore(); getline(cin, temp->nama);
+            getline(cin, temp->nama);   // hapus cin.ignore()
             cout << "Masukkan Kategori Produk: ";
             getline(cin, temp->kategori);
+
             cout << "Masukkan Stok Produk: ";
-            while (!(cin >> temp->stok) || temp->stok< 0) {
-                cout<< "Input tidak valid! Masukkan stok dengan angka positif: ";
+            while (!(cin >> temp->stok) || temp->stok < 0) {
+                cout << "Input tidak valid! Masukkan stok dengan angka positif: ";
+                cin.clear();
                 cin.ignore(1000, '\n');
             }
 
             cout << "Masukkan Harga Produk: ";
             while (!(cin >> temp->harga) || temp->harga < 0) {
                 cout << "Input tidak valid. Masukkan harga dengan angka positif: ";
-                cin.clear(); cin.ignore(1000, '\n');
+                cin.clear();
+                cin.ignore(1000, '\n');
             }
 
+            cin.ignore();  // membersihkan newline sebelum kembali ke menu
             cout << "Data Produk Berhasil Diubah." << endl;
             return;
         }
@@ -80,43 +84,55 @@ void editproduk(string kode) {
     cout << "Produk Tidak Ditemukan" << endl;
 }
 
+
 void tampilkanproduk() {
     if (!head) {
         cout << "Produk tidak ada dalam data atau kosong." << endl;
         return;
     }
-    cout << "\n=== Daftar Produk ===\n";
-    cout << "Kode\t Nama \t\t Kategori \t Stok \t Harga \n";
-    cout << "-----------------------------------------------\n";
+
+    cout << "\n============================ Daftar Produk ============================ \n";
+    cout << left
+         << setw(10) << "Kode"
+         << setw(20) << "Nama"
+         << setw(15) << "Kategori"
+         << setw(10) << "Stok"
+         << setw(12) << "Harga"
+         << "\n";
+
+    cout << string(67, '-') << "\n";
 
     Produk* temp = head;
     while (temp) {
-        cout << temp->kode << "\t"
-            << temp->nama << "\t" 
-            << temp->kategori << "\t"
-            << temp->stok << "\t"
-            << temp->harga << "\n";
+        cout << left
+             << setw(10) << temp->kode
+             << setw(20) << temp->nama
+             << setw(15) << temp->kategori
+             << setw(10) << temp->stok
+             << fixed << setprecision(2)
+             << setw(12) << temp->harga
+             << "\n";
         temp = temp->next;
     }
 }
-
-void cariproduk(string kode) {
+void cariProduk(const string& kode) {
     Produk* temp = head;
-    while (temp) {
+    while (temp != NULL) {
         if (temp->kode == kode) {
-            cout << "Produk ditemukan: " << endl;
-            cout << "Kode: " << temp->kode << ", Nama: " << temp->nama << ", Kategori: " << temp->kategori
-                 << ", Stok: " << temp->stok << ", Harga: " << temp->harga << endl;
+            cout << "\nProduk ditemukan!\n";
+            cout << "Kode: " << temp->kode << endl;
+            cout << "Nama: " << temp->nama << endl;
+            cout << "Kategori: " << temp->kategori << endl;
+            cout << "Stok: " << temp->stok << endl;
+            cout << "Harga: " << fixed << setprecision(2) << temp->harga << endl;
             return;
         }
-
         temp = temp->next;
     }
-
-    cout << "Produk Tidak Ditemukan" << endl;
+    cout << "Produk dengan kode " << kode << " tidak ditemukan.\n";
 }
 
-void urutkanProduk(int pilihan) {
+void urutkanProduk(int pilihan, int urutan) {
     if (!head || !head->next) return;
 
     bool swapped;
@@ -128,14 +144,21 @@ void urutkanProduk(int pilihan) {
             Produk* next = current->next;
             bool harusTukar = false;
 
-            if (pilihan == 1 && current->nama > next->nama) {
-                harusTukar = true;
-            } else if (pilihan == 2 && current->harga > next->harga) {
-                harusTukar = true;
+            if (pilihan == 1) { // Urut berdasarkan nama
+                if (urutan == 1 && current->nama > next->nama) {
+                    harusTukar = true;
+                } else if (urutan == 2 && current->nama < next->nama) {
+                    harusTukar = true;
+                }
+            } else if (pilihan == 2) { // Urut berdasarkan harga
+                if (urutan == 1 && current->harga > next->harga) {
+                    harusTukar = true;
+                } else if (urutan == 2 && current->harga < next->harga) {
+                    harusTukar = true;
+                }
             }
 
             if (harusTukar) {
-                // Tukar semua data
                 swap(current->kode, next->kode);
                 swap(current->nama, next->nama);
                 swap(current->kategori, next->kategori);
@@ -147,12 +170,14 @@ void urutkanProduk(int pilihan) {
         }
     } while (swapped);
 
-    if (pilihan == 1)
-        cout << "Produk berhasil diurutkan berdasarkan nama (A-Z).\n";
-    else if (pilihan == 2)
-        cout << "Produk berhasil diurutkan berdasarkan harga (terendah-tertinggi).\n";
-}
+    // Output informasi hasil pengurutan
+    string berdasarkan = (pilihan == 1) ? "nama" : "harga";
+    string arah = (urutan == 1) ? "(Ascending)" : "(Descending)";
+    cout << "\nProduk berhasil diurutkan berdasarkan " << berdasarkan << " " << arah << ".\n";
 
+    // Tampilkan produk setelah diurutkan
+    tampilkanproduk();
+}
 
 void hapusproduk(string kode) {
     Produk *temp = head, *prev = nullptr;
@@ -289,43 +314,56 @@ void menu() {
                     break;
                 }
 
-
                 case 2:
                     tampilkanproduk();
                     break;
 
                 case 3: {
-                    int sortPilihan;
+                    int sortPilihan, arahUrutan;
+
                     cout << "\n=== Urutkan Produk ===\n";
-                    cout << "1. Berdasarkan Nama (A-Z)\n";
-                    cout << "2. Berdasarkan Harga (Termurah-Termahal)\n";
-                    cout << "Masukkan pilihan: ";
-                    while (!(cin >> sortPilihan) || (sortPilihan !=1 && sortPilihan != 2)) {
+                    cout << "Pilih kriteria pengurutan:\n";
+                    cout << "1. Berdasarkan Nama\n";
+                    cout << "2. Berdasarkan Harga\n";
+                    cout << "Masukkan pilihan (1/2): ";
+                    while (!(cin >> sortPilihan) || (sortPilihan != 1 && sortPilihan != 2)) {
                         cout << "Input tidak valid. Masukkan 1 atau 2: ";
                         cin.clear(); cin.ignore(1000, '\n');
                     }
-                    urutkanProduk(sortPilihan);
+
+                    cout << "\nPilih arah pengurutan:\n";
+                    cout << "1. Ascending (A-Z / Termurah)\n";
+                    cout << "2. Descending (Z-A / Termahal)\n";
+                    cout << "Masukkan pilihan (1/2): ";
+                    while (!(cin >> arahUrutan) || (arahUrutan != 1 && arahUrutan != 2)) {
+                        cout << "Input tidak valid. Masukkan 1 atau 2: ";
+                        cin.clear(); cin.ignore(1000, '\n');
+                    }
+
+                    urutkanProduk(sortPilihan, arahUrutan);
                     break;
                 }
 
                 case 4: {
                     string kode;
                     cout << "Masukkan Kode Produk yang dicari: ";
-                    cin.ignore(); getline(cin, kode);
-                    cariproduk(kode);
+                    getline(cin, kode);
+                    cariProduk(kode);
                     break;
                 }
+
                 case 5: {
                     string kode;
                     cout << "Masukkan Kode Produk yang ingin diedit: ";
-                    cin.ignore(); getline(cin, kode);
+                    getline(cin, kode);  // langsung saja tanpa cin.ignore()
                     editproduk(kode);
                     break;
                 }
+
                 case 6: {
                     string kode;
                     cout << "Masukkan Kode Produk yang ingin dihapus: ";
-                    cin.ignore(); getline(cin, kode);
+                    getline(cin, kode);
                     hapusproduk(kode);
                     break;
                 }
